@@ -127,8 +127,7 @@ int main (void)
     UINT8       nodeid;
 
     lcd_init();
-
-    // get node ID from input
+        // get node ID from input
     nodeid = gpio_getNodeid();
 
     // initialize instance
@@ -154,11 +153,11 @@ int main (void)
     lcd_printNodeId((WORD)instance_l.nodeId);
 
     if((ret = initPowerlink(&instance_l)) != kErrorOk)
-        goto Exit;
-
+    	goto Exit;
+    printf("initPowerlink:OK \n");
     if((ret = initApp()) != kErrorOk)
         goto Exit;
-
+    printf("initApp:OK \n");
     loopMain(&instance_l);
 
 Exit:
@@ -194,10 +193,8 @@ static tOplkError initPowerlink(tInstance* pInstance_p)
 
     OPLK_MEMSET(&initParam, 0, sizeof(initParam));
     initParam.sizeOfInitParam = sizeof(initParam);
-
     initParam.nodeId = pInstance_p->nodeId;
     initParam.ipAddress = (0xFFFFFF00 & IP_ADDR) | initParam.nodeId;
-
     OPLK_MEMCPY(initParam.aMacAddress, pInstance_p->aMacAddr, sizeof(initParam.aMacAddress));
 
     initParam.fAsyncOnly = FALSE;
@@ -235,12 +232,13 @@ static tOplkError initPowerlink(tInstance* pInstance_p)
 
     // initialize POWERLINK stack
     ret = oplk_init(&initParam);
+    printf("1.oplk_init: %x\n",ret);
     if(ret != kErrorOk)
     {
         PRINTF("oplk_init() failed (Error:0x%x!\n", ret);
         return ret;
     }
-
+    PRINTF("oplk_init:OK..\n");
     return kErrorOk;
 }
 
@@ -262,7 +260,10 @@ static tOplkError loopMain(tInstance* pInstance_p)
 
     // start processing
     if((ret = oplk_execNmtCommand(kNmtEventSwReset)) != kErrorOk)
+    {
+    	printf("oplk_execNmtCommand: %x\n",ret);
         return ret;
+    }
 
     while(1)
     {

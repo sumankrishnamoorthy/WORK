@@ -184,6 +184,7 @@ tOplkError ctrlu_init(void)
     return kErrorOk;
 
 Exit:
+printf("ctrlu_init: %x\n",ret);
     return ret;
 }
 
@@ -237,6 +238,7 @@ tOplkError ctrlu_initStack(tOplkApiInitParam * pInitParam_p)
     if (ctrlInstance_l.initParam.pfnCbEvent == NULL)
     {   // application must always have an event callback function
         ret = kErrorApiInvalidParam;
+        printf("kErrorApiInvalidParam: %x\n",ret);
         goto Exit;
     }
 
@@ -254,6 +256,7 @@ tOplkError ctrlu_initStack(tOplkApiInitParam * pInitParam_p)
 
     /* Read back init param because current MAC address was copied by DLLK */
     ret = ctrlucal_readInitParam(&ctrlParam);
+    printf("ctrlucal_readInitParam: %x\n",ret);
     if (ret != kErrorOk)
     {
         goto Exit;
@@ -271,6 +274,7 @@ tOplkError ctrlu_initStack(tOplkApiInitParam * pInitParam_p)
 
     TRACE ("initialize error handler user module...\n");
     ret = errhndu_init();
+    printf("errhndu_init: %x\n",ret);
     if (ret != kErrorOk)
     {
         goto Exit;
@@ -278,6 +282,7 @@ tOplkError ctrlu_initStack(tOplkApiInitParam * pInitParam_p)
 
     TRACE ("Initialize DlluCal module...\n");
     ret = dllucal_init();
+    printf("dllucal_init: %x\n",ret);
     if (ret != kErrorOk)
     {
         goto Exit;
@@ -327,6 +332,7 @@ tOplkError ctrlu_initStack(tOplkApiInitParam * pInitParam_p)
     // and thereby the whole EPL stack
 
 Exit:
+printf("ctrlu_initStack: %x\n",ret);
     return ret;
 }
 

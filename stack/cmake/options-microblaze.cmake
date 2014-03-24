@@ -48,8 +48,9 @@ OPTION(CFG_COMPILE_LIB_CN                      "Compile openPOWERLINK CN library
 # CN libraries
 IF(CFG_COMPILE_LIB_CN)
     # Path to the hardware library folder of your board example
-    SET( CFG_COMPILE_LIB_CN_HW_LIB_DIR ${XIL_HW_LIB_DIR}/avnet-s6plkeb/cn-single-gpio
-            CACHE PATH "Path to the hardware library folder for the single processor CN library")
+    #SET( CFG_COMPILE_LIB_CN_HW_LIB_DIR ${XIL_HW_LIB_DIR}/avnet-s6plkeb/cn-single-gpio
+	SET( CFG_COMPILE_LIB_CN_HW_LIB_DIR ${XIL_HW_LIB_DIR}/Kalycito-s6HiPerMN/cn-single-gpio
+	            CACHE PATH "Path to the hardware library folder for the single processor CN library")
 
     ADD_SUBDIRECTORY(proj/generic/liboplkcn)
 ELSE()

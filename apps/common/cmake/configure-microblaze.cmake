@@ -37,7 +37,8 @@ INCLUDE(setmicroblazeboardconfig)
 
 ################################################################################
 # Path to the hardware library folder of your board example
-SET(CFG_HW_LIB_DIR ${OPLK_ROOT_DIR}/hardware/lib/${SYSTEM_NAME_DIR}/${SYSTEM_PROCESSOR_DIR}/avnet-s6plkeb/cn-single-gpio
+SET(CFG_HW_LIB_DIR ${OPLK_ROOT_DIR}/hardware/lib/${SYSTEM_NAME_DIR}/${SYSTEM_PROCESSOR_DIR}/Kalycito-s6HiPerMN/cn-single-gpio
+#SET(CFG_HW_LIB_DIR ${OPLK_ROOT_DIR}/hardware/lib/${SYSTEM_NAME_DIR}/${SYSTEM_PROCESSOR_DIR}/avnet-s6plkeb/cn-single-gpio
         CACHE PATH "Path to the hardware library folder of your demo application")
 
 ################################################################################

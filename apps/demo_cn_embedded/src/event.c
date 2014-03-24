@@ -139,7 +139,7 @@ tOplkError processEvents(tOplkApiEventType EventType_p,
 
     switch (EventType_p)
     {
-        case kOplkApiEventNmtStateChange:
+            case kOplkApiEventNmtStateChange:
             ret = processStateChangeEvent(EventType_p, pEventArg_p, pUserArg_p);
             break;
 
@@ -150,7 +150,7 @@ tOplkError processEvents(tOplkApiEventType EventType_p,
 
         case kOplkApiEventLed:
             /* POWERLINK S/E LED needs to be changed */
-            switch(pEventArg_p->ledEvent.ledType)
+        	switch(pEventArg_p->ledEvent.ledType)
             {
                 case kLedTypeStatus:
                     gpio_setStatusLed(pEventArg_p->ledEvent.fOn);
@@ -172,8 +172,7 @@ tOplkError processEvents(tOplkApiEventType EventType_p,
     // call user event call back
     if((ret == kErrorOk) && (pfnEventCb_l != NULL))
         ret = pfnEventCb_l(EventType_p, pEventArg_p, pUserArg_p);
-
-    return ret;
+        return ret;
 }
 
 //============================================================================//
