@@ -333,8 +333,7 @@ void dllk_processTransmittedNmtReq(tEdrvTxBuffer * pTxBuffer_p)
             event.eventArgSize = pTxBuffer_p->txFrameSize;
             event.pEventArg = pTxFrame;
             //PRINTF("%s TxB=%p, TxF=%p, s=%u\n", __func__, pTxBuffer_p, event.pEventArg, event.eventArgSize);
-            ret = eventk_postEvent(&event);
-            if (ret != kErrorOk)
+            if ((ret = eventk_postEvent(&event)) != kErrorOk)
                 goto Exit;
         }
     }
@@ -1113,9 +1112,7 @@ tOplkError dllk_createTxFrame (UINT* pHandle_p, UINT* pFrameSize_p,
 
         // setup Tx buffer
         pTxBuffer->maxBufferSize = *pFrameSize_p;
-
-        ret = edrv_allocTxBuffer(pTxBuffer);
-        if (ret != kErrorOk)
+        if ((ret = edrv_allocTxBuffer(pTxBuffer)) != kErrorOk)
         {   // error occurred while registering Tx frame
             goto Exit;
         }

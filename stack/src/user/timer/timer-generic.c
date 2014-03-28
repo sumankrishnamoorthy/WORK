@@ -290,7 +290,6 @@ tOplkError timeru_process(void)
 
         ret = eventu_postEvent(&event);
     }
-
     return ret;
 }
 

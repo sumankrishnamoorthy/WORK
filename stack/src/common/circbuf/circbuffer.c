@@ -142,7 +142,7 @@ tCircBufError circbuf_alloc (UINT8 id_p, size_t size_p, tCircBufInstance** ppIns
 
     alignedSize  = (size_p + (CIRCBUF_BLOCK_ALIGNMENT - 1)) & ~(CIRCBUF_BLOCK_ALIGNMENT - 1);
 
-    if ((ret = circbuf_allocBuffer(pInstance, alignedSize)) != kCircBufOk)
+    if ((ret=circbuf_allocBuffer(pInstance, alignedSize)) != kCircBufOk)
     {
         circbuf_freeInstance(pInstance);
         return ret;

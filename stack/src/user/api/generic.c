@@ -130,17 +130,13 @@ tOplkError oplk_init(tOplkApiInitParam* pInitParam_p)
     tOplkError          ret;
 
     target_init();
-
-    printf("target_init:OK");
-ret=ctrlu_init();
-printf("ctrlu_init: %x\n",ret);
-    if (ret != kErrorOk)
+    if ((ret=ctrlu_init()) != kErrorOk)
     {
         target_cleanup();
         return ret;
     }
-
-    return ctrlu_initStack(pInitParam_p);
+ret=ctrlu_initStack(pInitParam_p);
+    return ret;
 }
 
 //------------------------------------------------------------------------------

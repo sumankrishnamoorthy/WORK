@@ -116,6 +116,7 @@ tOplkError eventkcal_initQueueCircbuf(tEventQueue eventQueue_p)
         return kErrorInvalidInstanceParam;
     }
 
+
     if (instance_l[eventQueue_p] != NULL)
     {
         TRACE("%s() Error: instance of queue %d not NULL!\n", __func__, eventQueue_p);

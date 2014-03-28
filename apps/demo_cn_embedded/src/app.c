@@ -117,7 +117,6 @@ tOplkError initApp(void)
     tOplkError ret = kErrorOk;
 
     ret = initProcessImage();
-    printf("app.c-->initProcessImage: %x\n",ret);
     return ret;
 }
 
@@ -154,9 +153,7 @@ tOplkError processSync(void)
     UINT32          appOutVal;
     UINT8           appInVal;
 
-    ret = oplk_exchangeProcessImageOut();
-    printf("app.c-->oplk_exchangeProcessImageOut: %x\n",ret);
-    if (ret != kErrorOk)
+    if ((ret = oplk_exchangeProcessImageOut()) != kErrorOk)
         return ret;
 
     /* read input image - digital outputs */
@@ -176,7 +173,6 @@ tOplkError processSync(void)
     pProcessImageIn_l->digitalIn[3] = appInVal;
 
     ret = oplk_exchangeProcessImageIn();
-    printf("app.c-->oplk_exchangeProcessImageIn: %x\n",ret);
     return ret;
 }
 
@@ -208,22 +204,17 @@ static tOplkError initProcessImage(void)
     ret = oplk_allocProcessImage(sizeof(PI_IN), sizeof(PI_OUT));
     if (ret != kErrorOk)
     {
-    	printf("app.c-->oplk_allocProcessImage: %x\n",ret);
         return ret;
     }
 
     pProcessImageIn_l = oplk_getProcessImageIn();
     pProcessImageOut_l = oplk_getProcessImageOut();
-    printf("app.c-->oplk_getProcessImageIn: %x\n",pProcessImageIn_l);
-    printf("app.c-->oplk_getProcessImageOut: %x\n",pProcessImageOut_l);
     /* link process variables used by CN to object dictionary */
     PRINTF("Linking process image vars:\n");
-
     obdSize = sizeof(pProcessImageIn_l->digitalIn[0]);
     varEntries = 4;
     ret = oplk_linkProcessImageObject(0x6000, 0x01, offsetof(PI_IN, digitalIn),
                                      FALSE, obdSize, &varEntries);
-    printf("app.c-->oplk_linkProcessImageObject: %x\n",ret);
     if (ret != kErrorOk)
     {
         PRINTF("linking process vars ... error %04x\n\n", ret);
@@ -234,7 +225,6 @@ static tOplkError initProcessImage(void)
     varEntries = 4;
     ret = oplk_linkProcessImageObject(0x6200, 0x01, offsetof(PI_OUT, digitalOut),
                                      TRUE, obdSize, &varEntries);
-    printf("app.c-->oplk_linkProcessImageObject--2: %x\n",ret);
     if (ret != kErrorOk)
     {
         PRINTF("linking process vars ... error %04x\n\n", ret);
@@ -242,7 +232,6 @@ static tOplkError initProcessImage(void)
     }
 
     PRINTF("Linking process vars... ok\n\n");
-
     return kErrorOk;
 }
 

@@ -185,7 +185,6 @@ tOplkError nmtu_postNmtEvent(tNmtEvent nmtEvent_p)
     event.eventArgSize = sizeof(nmtEvent_p);
 
     ret = eventu_postEvent(&event);
-
     return ret;
 }
 

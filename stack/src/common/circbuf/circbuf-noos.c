@@ -151,11 +151,10 @@ tCircBufError circbuf_allocBuffer(tCircBufInstance* pInstance_p, size_t size_p)
     size_t                      size;
 
     size = size_p + sizeof(tCircBufHeader);
-
     pInstance_p->pCircBufHeader = OPLK_MALLOC(size);
     if (pInstance_p->pCircBufHeader == NULL)
     {
-        TRACE("%s() malloc failed!\n", __func__);
+        printf("%s() malloc failed!\n", __func__);
         return kCircBufNoResource;
     }
 

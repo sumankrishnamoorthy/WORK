@@ -48,7 +48,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <target/openmac.h>
 #include <omethlib.h>
 #include <common/target.h>
-
+#include<openmac_cfg.h>
 #include <oplk/benchmark.h>
 #include <oplk/debug.h>
 
@@ -201,7 +201,6 @@ tOplkError edrv_init(tEdrvInitParam* pEdrvInitParam_p)
     OPLK_MEMSET(&edrvInstance_l, 0, sizeof(edrvInstance_l));
 
     edrvInstance_l.initParam = *pEdrvInitParam_p;
-
     // The phys are reset by the initial hw state
     //  If sw comes here again, no phy reset is done!
     target_msleep(EDRV_PHY_RST_PULSE_MS);
@@ -213,9 +212,7 @@ tOplkError edrv_init(tEdrvInitParam* pEdrvInitParam_p)
     omethInit();
 
     edrvInstance_l.macConf = getMacConfig(0);
-
     edrvInstance_l.pMacInst = omethCreate(&edrvInstance_l.macConf);
-
     if (edrvInstance_l.pMacInst == NULL)
     {
         ret = kErrorNoResource;
@@ -232,10 +229,9 @@ tOplkError edrv_init(tEdrvInitParam* pEdrvInitParam_p)
             edrvInstance_l.phyInstCount++;
         }
     }
-
     if(edrvInstance_l.phyInstCount != OPENMAC_PHYCNT)
     {
-        DEBUG_LVL_ERROR_TRACE("%s() Not all phy are found as configured (%d)!\n", __func__, OPENMAC_PHYCNT);
+        DEBUG_LVL_EDRV_TRACE("%s() Not all phy are found as configured (%d)!\n", __func__, OPENMAC_PHYCNT);
         ret = kErrorNoResource;
         goto Exit;
     }
@@ -253,7 +249,7 @@ tOplkError edrv_init(tEdrvInitParam* pEdrvInitParam_p)
     edrvInstance_l.pRxAsndHookInst = omethHookCreate(edrvInstance_l.pMacInst, rxHook, CONFIG_EDRV_ASND_DEFFERRED_RX_BUFFERS);
     if(edrvInstance_l.pRxAsndHookInst == NULL)
     {
-        DEBUG_LVL_ERROR_TRACE("%s() Rx hook creation for Asnd frames failed!\n", __func__);
+        DEBUG_LVL_EDRV_TRACE("%s() Rx hook creation for Asnd frames failed!\n", __func__);
         ret = kErrorNoResource;
         goto Exit;
     }
@@ -272,7 +268,6 @@ tOplkError edrv_init(tEdrvInitParam* pEdrvInitParam_p)
     //get tx buffer base
     edrvInstance_l.pTxBufferBase = openmac_memUncached((void*)OPENMAC_PKT_BASE, OPENMAC_PKT_SPAN);
 #endif
-
     omethStart(edrvInstance_l.pMacInst, TRUE);
     DEBUG_LVL_EDRV_TRACE(" OPENMAC started\n");
 
@@ -369,7 +364,6 @@ tOplkError edrv_allocTxBuffer(tEdrvTxBuffer* pBuffer_p)
 {
     tOplkError          ret = kErrorOk;
     ometh_packet_typ*   pPacket = NULL;
-
     if (pBuffer_p->maxBufferSize > EDRV_MAX_BUFFER_SIZE)
     {
         ret = kErrorEdrvNoFreeBufEntry;
@@ -397,13 +391,11 @@ tOplkError edrv_allocTxBuffer(tEdrvTxBuffer* pBuffer_p)
     }
 
     pPacket->length = pBuffer_p->maxBufferSize;
-
     pBuffer_p->txBufferNumber.value = EDRV_MAX_FILTERS;
-
     pBuffer_p->pBuffer = (UINT8*)&pPacket->data;
 
 Exit:
-    return ret;
+	return ret;
 }
 
 //------------------------------------------------------------------------------
@@ -930,7 +922,6 @@ static ometh_config_typ getMacConfig(UINT adapter_p)
     config.pPhyBase = (void*)OPENMAC_PHY_BASE;
     config.pRamBase = (void*)OPENMAC_RAM_BASE;
     config.pRegBase = (void*)OPENMAC_REG_BASE;
-
 #if OPENMAC_PKTLOCRX == OPENMAC_PKTBUF_LOCAL
     config.pBufBase = (void*)OPENMAC_PKT_BASE;
     config.pktLoc = OMETH_PKT_LOC_MACINT;
@@ -1024,20 +1015,22 @@ static ometh_packet_typ* allocTxMsgBufferIntern(tEdrvTxBuffer* pBuffer_p)
     ometh_packet_typ*   pPacket;
     UINT                bufferSize;
     void*               pBufferBase = openmac_memUncached((void*)OPENMAC_PKT_BASE, OPENMAC_PKT_SPAN);
+    tOplkError      ret = kErrorOk;
+
+
 
     // Initialize if no buffer is allocated
-    if(edrvInstance_l.txBufferCount == 0)
+    if((ret=edrvInstance_l.txBufferCount) == 0)
     {
         edrvInstance_l.pNextBufferBase = edrvInstance_l.pTxBufferBase;
         edrvInstance_l.usedMemorySpace = 0;
     }
-
     // Get buffer size from descriptor and add packet length
     bufferSize = pBuffer_p->maxBufferSize + sizeof(((ometh_packet_typ*)0)->length);
-
     // Align the buffer size to 4 byte alignment
     bufferSize += 0x3U;
     bufferSize &= 0xFFFFFFFCU;
+
 
     // Check for enough memory space
     if(bufferSize > OPENMAC_PKTBUFSIZE - edrvInstance_l.usedMemorySpace)
@@ -1047,7 +1040,6 @@ static ometh_packet_typ* allocTxMsgBufferIntern(tEdrvTxBuffer* pBuffer_p)
     }
 
     pPacket = (ometh_packet_typ*)edrvInstance_l.pNextBufferBase;
-
     // Return if the requested buffer is not within the memory range
     if(!(edrvInstance_l.pTxBufferBase <= (void*)pPacket && (void*)pPacket < (void*)((UINT32)pBufferBase + OPENMAC_PKTBUFSIZE)))
     {
@@ -1065,8 +1057,8 @@ static ometh_packet_typ* allocTxMsgBufferIntern(tEdrvTxBuffer* pBuffer_p)
     edrvInstance_l.txBufferCount++;
     edrvInstance_l.usedMemorySpace += bufferSize;
 
-    DEBUG_LVL_EDRV_TRACE("%s() Add buffer @ 0x%08X with size %4d byte ", __func__, pPacket, bufferSize);
-    DEBUG_LVL_EDRV_TRACE("(Used memory %4d byte %2d buffers)\n", edrvInstance_l.usedMemorySpace, edrvInstance_l.txBufferCount);
+    DEBUG_LVL_ERROR_TRACE("%s() Add buffer @ 0x%08X with size %4d byte\n ", __func__, pPacket, bufferSize);
+    DEBUG_LVL_ERROR_TRACE("(Used memory %4d byte %2d buffers)\n", edrvInstance_l.usedMemorySpace, edrvInstance_l.txBufferCount);
 
     return pPacket;
 }
@@ -1089,7 +1081,6 @@ static void freeTxMsgBufferIntern(tEdrvTxBuffer* pBuffer_p)
     // Align the buffer size to 4 byte alignment
     bufferSize += 0x3U;
     bufferSize &= 0xFFFFFFFCU;
-
     // Free the buffer from local memory
     edrvInstance_l.txBufferCount--;
     edrvInstance_l.usedMemorySpace -= bufferSize;

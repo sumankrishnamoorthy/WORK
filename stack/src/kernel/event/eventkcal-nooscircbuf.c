@@ -117,9 +117,10 @@ The function initializes the kernel event CAL module on Linux.
 //------------------------------------------------------------------------------
 tOplkError eventkcal_init (void)
 {
+	tOplkError  ret = kErrorOk;
     OPLK_MEMSET(&instance_l, 0, sizeof(tEventkCalInstance));
-
-    if (eventkcal_initQueueCircbuf(kEventQueueK2U) != kErrorOk)
+    ret=eventkcal_initQueueCircbuf(kEventQueueK2U);
+    if (ret != kErrorOk)
         goto Exit;
 
     instance_l.fInitialized = TRUE;

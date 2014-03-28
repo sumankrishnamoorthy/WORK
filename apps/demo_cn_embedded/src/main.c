@@ -144,20 +144,19 @@ int main (void)
 
     initEvents(&eventCbPowerlink);
 
-    PRINTF("----------------------------------------------------\n");
-    PRINTF("openPOWERLINK embedded CN DEMO application\n");
-    PRINTF("using openPOWERLINK Stack: %s\n", PLK_DEFINED_STRING_VERSION);
-    PRINTF("----------------------------------------------------\n");
+    printf("----------------------------------------------------\n");
+    printf("openPOWERLINK embedded CN DEMO application\n");
+    printf("using openPOWERLINK Stack: %s\n", PLK_DEFINED_STRING_VERSION);
+    printf("----------------------------------------------------\n");
 
-    PRINTF("NODEID=0x%02X\n", instance_l.nodeId);
+    printf("NODEID=0x%02X\n", instance_l.nodeId);
     lcd_printNodeId((WORD)instance_l.nodeId);
 
     if((ret = initPowerlink(&instance_l)) != kErrorOk)
     	goto Exit;
-    printf("initPowerlink:OK \n");
     if((ret = initApp()) != kErrorOk)
         goto Exit;
-    printf("initApp:OK \n");
+
     loopMain(&instance_l);
 
 Exit:
@@ -232,7 +231,6 @@ static tOplkError initPowerlink(tInstance* pInstance_p)
 
     // initialize POWERLINK stack
     ret = oplk_init(&initParam);
-    printf("1.oplk_init: %x\n",ret);
     if(ret != kErrorOk)
     {
         PRINTF("oplk_init() failed (Error:0x%x!\n", ret);
@@ -261,30 +259,26 @@ static tOplkError loopMain(tInstance* pInstance_p)
     // start processing
     if((ret = oplk_execNmtCommand(kNmtEventSwReset)) != kErrorOk)
     {
-    	printf("oplk_execNmtCommand: %x\n",ret);
-        return ret;
+    	return ret;
     }
 
     while(1)
     {
-        // do background tasks
-        if((ret = oplk_process()) != kErrorOk)
+    	// do background tasks
+        if((ret=oplk_process()) != kErrorOk)
             break;
 
         // trigger switch off
-        if(pInstance_p->fShutdown != FALSE)
+       if(pInstance_p->fShutdown != FALSE)
         {
             oplk_execNmtCommand(kNmtEventSwitchOff);
-
-            // reset shutdown flag to generate only one switch off command
+          // reset shutdown flag to generate only one switch off command
             pInstance_p->fShutdown = FALSE;
         }
-
-        // exit loop if NMT is in off state
-        if(pInstance_p->fGsOff != FALSE)
+       // exit loop if NMT is in off state
+       if(pInstance_p->fGsOff != FALSE)
             break;
     }
-
     return ret;
 }
 

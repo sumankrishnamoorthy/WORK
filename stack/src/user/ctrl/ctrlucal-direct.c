@@ -158,9 +158,9 @@ tOplkError ctrlucal_executeCmd(tCtrlCmdType cmd_p)
     tOplkError          ret;
     tOplkError          fRet;
 
-    if ((ret = ctrlk_executeCmd(cmd_p, &fRet, &status_l, NULL)) != kErrorOk)
-        return ret;
 
+    if ((ret=ctrlk_executeCmd(cmd_p, &fRet, &status_l, NULL)) != kErrorOk)
+        return ret;
     return fRet;
 }
 

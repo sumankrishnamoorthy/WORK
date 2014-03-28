@@ -188,7 +188,6 @@ tOplkError eventucal_postKernelEvent (tEvent *pEvent_p)
     target_enableGlobalInterrupt(FALSE);
 
     ret = eventk_process(pEvent_p);
-
     target_enableGlobalInterrupt(TRUE);
 
     return ret;
@@ -220,7 +219,6 @@ tOplkError eventucal_postUserEvent (tEvent *pEvent_p)
                    debugstr_getEventSinkStr(pEvent_p->eventSink), pEvent_p->eventSink,
                    pEvent_p->eventArgSize);*/
     ret = eventu_process(pEvent_p);
-
     return ret;
 }
 

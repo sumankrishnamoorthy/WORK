@@ -104,8 +104,7 @@ tOplkError dllk_addInstance(tDllkInitParam* pInitParam_p)
     tOplkError      ret = kErrorOk;
     UINT            index;
     tEdrvInitParam  EdrvInitParam;
-
-    // reset instance structure
+   // reset instance structure
     OPLK_MEMSET(&dllkInstance_g, 0, sizeof (dllkInstance_g));
 
     //jba able to work without hresk?
@@ -116,21 +115,21 @@ tOplkError dllk_addInstance(tDllkInitParam* pInitParam_p)
 
 #if (CONFIG_DLL_PROCESS_SYNC == DLL_PROCESS_SYNC_ON_TIMER)
     if ((ret = synctimer_addInstance()) != kErrorOk)
-        return ret;
+    	return ret;
 
     if ((ret = synctimer_registerHandler(dllk_cbCnTimerSync)) != kErrorOk)
-        return ret;
+    	return ret;
 
     if ((ret = synctimer_registerLossOfSyncHandler(dllk_cbCnLossOfSync)) != kErrorOk)
-        return ret;
+    	return ret;
 
 #if CONFIG_DLL_PRES_CHAINING_CN != FALSE
     if ((ret = synctimer_registerLossOfSyncHandler2(dllk_cbCnPresFallbackTimeout)) != kErrorOk)
-        return ret;
+    	return ret;
 #endif
 
    if ((ret = synctimer_setSyncShift(CONFIG_DLL_SOC_SYNC_SHIFT_US)) != kErrorOk)
-       return ret;
+	   return ret;
 #endif
 
     // if dynamic memory allocation available allocate instance structure
@@ -139,7 +138,7 @@ tOplkError dllk_addInstance(tDllkInitParam* pInitParam_p)
     dllkInstance_g.pTxBuffer = aDllkTxBuffer_l;
     dllkInstance_g.maxTxFrames = sizeof (aDllkTxBuffer_l) / sizeof (tEdrvTxBuffer);
     dllkInstance_g.dllState = kDllGsInit;               // initialize state
-
+//    memset(dllkInstance_g.pTxBuffer,0,sizeof (aDllkTxBuffer_l));
 #if NMT_MAX_NODE_ID > 0
     // set up node info structure
     for (index = 0; index < tabentries (dllkInstance_g.aNodeInfo); index++)
@@ -153,8 +152,9 @@ tOplkError dllk_addInstance(tDllkInitParam* pInitParam_p)
     EdrvInitParam.hwParam = pInitParam_p->hwParam;
     EdrvInitParam.pfnRxHandler = dllk_processFrameReceived;
     //    EdrvInitParam.pfnTxHandler = EplDllkCbFrameTransmitted; //jba why commented out?
+
     if ((ret = edrv_init(&EdrvInitParam)) != kErrorOk)
-        return ret;
+    	return ret;
 
     // copy local MAC address from Ethernet driver back to local instance structure
     // because Ethernet driver may have read it from controller EEPROM
@@ -174,7 +174,6 @@ tOplkError dllk_addInstance(tDllkInitParam* pInitParam_p)
     if ((ret = edrvcyclic_regErrorHandler(dllk_cbCyclicError)) != kErrorOk)
         return ret;
 #endif
-
     return ret;
 }
 

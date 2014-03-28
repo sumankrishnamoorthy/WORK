@@ -170,12 +170,13 @@ tOplkError ctrlu_init(void)
 
     ctrlInstance_l.lastHeartbeat = 0;
 
-    if ((ret = ctrlucal_init()) != kErrorOk)
+    ret = ctrlucal_init();
+
+    if (ret != kErrorOk)
     {
         DEBUG_LVL_ERROR_TRACE ("Could not initialize ctrlucal\n");
         goto Exit;
     }
-
     if ((ret = ctrlucal_checkKernelStack()) != kErrorOk)
     {
         ctrlucal_exit();
@@ -184,7 +185,6 @@ tOplkError ctrlu_init(void)
     return kErrorOk;
 
 Exit:
-printf("ctrlu_init: %x\n",ret);
     return ret;
 }
 
@@ -238,7 +238,6 @@ tOplkError ctrlu_initStack(tOplkApiInitParam * pInitParam_p)
     if (ctrlInstance_l.initParam.pfnCbEvent == NULL)
     {   // application must always have an event callback function
         ret = kErrorApiInvalidParam;
-        printf("kErrorApiInvalidParam: %x\n",ret);
         goto Exit;
     }
 
@@ -250,14 +249,12 @@ tOplkError ctrlu_initStack(tOplkApiInitParam * pInitParam_p)
     strncpy(ctrlParam.szEthDevName, ctrlInstance_l.initParam.hwParam.pDevName, 127);
     ctrlParam.ethDevNumber = ctrlInstance_l.initParam.hwParam.devNum;
     ctrlucal_storeInitParam(&ctrlParam);
-
     if ((ret = ctrlucal_executeCmd(kCtrlInitStack)) != kErrorOk)
         goto Exit;
 
     /* Read back init param because current MAC address was copied by DLLK */
-    ret = ctrlucal_readInitParam(&ctrlParam);
-    printf("ctrlucal_readInitParam: %x\n",ret);
-    if (ret != kErrorOk)
+
+    if ((ret=ctrlucal_readInitParam(&ctrlParam)) != kErrorOk)
     {
         goto Exit;
     }
@@ -274,7 +271,6 @@ tOplkError ctrlu_initStack(tOplkApiInitParam * pInitParam_p)
 
     TRACE ("initialize error handler user module...\n");
     ret = errhndu_init();
-    printf("errhndu_init: %x\n",ret);
     if (ret != kErrorOk)
     {
         goto Exit;
@@ -282,7 +278,6 @@ tOplkError ctrlu_initStack(tOplkApiInitParam * pInitParam_p)
 
     TRACE ("Initialize DlluCal module...\n");
     ret = dllucal_init();
-    printf("dllucal_init: %x\n",ret);
     if (ret != kErrorOk)
     {
         goto Exit;
@@ -332,7 +327,6 @@ tOplkError ctrlu_initStack(tOplkApiInitParam * pInitParam_p)
     // and thereby the whole EPL stack
 
 Exit:
-printf("ctrlu_initStack: %x\n",ret);
     return ret;
 }
 
@@ -438,7 +432,6 @@ tOplkError ctrlu_processStack(void)
         goto Exit;
 
     Ret = timeru_process();
-
 Exit:
     return Ret;
 }

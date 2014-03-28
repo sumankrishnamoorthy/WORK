@@ -272,7 +272,6 @@ tOplkError ctrlk_executeCmd(tCtrlCmdType cmd_p, tOplkError* pRet_p, UINT16* pSta
     {
         *pfExit_p = fExit;
     }
-
     return ret;
 }
 
@@ -333,18 +332,20 @@ static tOplkError initStack(void)
 
     ctrlkcal_readInitParam(&instance_l.initParam);
 
-    if ((ret = eventk_init()) != kErrorOk)
-        return ret;
 
-    if ((ret = nmtk_init()) != kErrorOk)
-        return ret;
+    ret = eventk_init();
+    if (ret != kErrorOk)
+    	return ret;
+    ret = nmtk_init();
+    if (ret != kErrorOk)
+    	return ret;
 
     OPLK_MEMCPY(dllkInitParam.aLocalMac, instance_l.initParam.aMacAddress, 6);
     dllkInitParam.hwParam.pDevName = instance_l.initParam.szEthDevName;
     dllkInitParam.hwParam.devNum = instance_l.initParam.ethDevNumber;
 
-    ret = dllk_addInstance(&dllkInitParam);
-    if (ret != kErrorOk)
+
+    if ((ret = dllk_addInstance(&dllkInitParam)) != kErrorOk)
         return ret;
 
     // copy MAC address back to instance structure
@@ -355,11 +356,11 @@ static tOplkError initStack(void)
 
     // initialize EplDllkCal module
     if ((ret = dllkcal_init()) != kErrorOk)
-        return ret;
+       return ret;
 
 #if defined(CONFIG_INCLUDE_PDO)
     if ((ret = pdok_init()) != kErrorOk)
-        return ret;
+       return ret;
 #endif
 
     // initialize Virtual Ethernet Driver
@@ -369,7 +370,6 @@ static tOplkError initStack(void)
 #endif
 
     ret = errhndk_init();
-
     return ret;
 }
 

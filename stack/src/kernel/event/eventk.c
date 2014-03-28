@@ -137,7 +137,6 @@ tOplkError eventk_init (void)
     tOplkError  ret = kErrorOk;
 
     ret = eventkcal_init();
-
     return ret;
 }
 
@@ -225,7 +224,6 @@ tOplkError eventk_process (tEvent *pEvent_p)
             fAlreadyHandled = TRUE;
         }
     }
-
     return ret;
 }
 
