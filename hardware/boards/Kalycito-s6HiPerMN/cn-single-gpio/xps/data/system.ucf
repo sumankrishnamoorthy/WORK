@@ -1,13 +1,9 @@
-#NET clock_in  LOC = AB13 ;
-
 Net clock_in TNM_NET = sys_clk_pin;
 TIMESPEC TS_sys_clk_pin = PERIOD sys_clk_pin 100000 kHz;
 Net  clock_in TNM_NET = sys_clk_pin  |  LOC = AB13; 
-
 Net RESET LOC = G9;
 
-
-##DDR## 
+		##DDR## 
 Net MCB_DDR3_dram_addr<0> LOC = K2 | IOSTANDARD = SSTL15_II ;
 Net MCB_DDR3_dram_addr<1> LOC = K1 | IOSTANDARD = SSTL15_II ;
 Net MCB_DDR3_dram_addr<2> LOC = K5 | IOSTANDARD = SSTL15_II ;
@@ -55,12 +51,8 @@ Net MCB_DDR3_dram_ldm LOC = N4 | IOSTANDARD = SSTL15_II ;
 Net MCB_DDR3_dram_odt LOC = L6 | IOSTANDARD = SSTL15_II ;
 Net MCB_DDR3_dram_ddr3_rst LOC = E3 | IOSTANDARD = SSTL15_II ;
 Net MCB_DDR3_rzq LOC = R7 | IOSTANDARD = SSTL15_II ;
-#Net MCB_DDR3_zio LOC = W4 | IOSTANDARD = SSTL15_II ;
 
-##FLASH
-#NET Generic_Memory_address<0> LOC = W15;
-#NET Generic_Memory_address<1> LOC = W17;
-#NET Generic_Memory_address<2> LOC = AB4;
+		##FLASH MEMORY##
 NET Generic_Memory_address<0> LOC = Y7;
 NET Generic_Memory_address<1> LOC = Y9;
 NET Generic_Memory_address<2> LOC = Y10;
@@ -87,7 +79,6 @@ NET Generic_Memory_address<22> LOC = AB16;
 NET Generic_Memory_address<23> LOC = AB17;
 NET Generic_Memory_address<*> IOSTANDARD=LVCMOS25;
 
-
 NET Generic_Memory_data<0> LOC = R8;
 NET Generic_Memory_data<1> LOC = R9; 
 NET Generic_Memory_data<2> LOC = H21;
@@ -106,16 +97,12 @@ NET Generic_Memory_data<14> LOC = W13;
 NET Generic_Memory_data<15> LOC = W14;
 
 NET Generic_Memory_data<*> IOSTANDARD=LVCMOS25;
-
- 
 Net Generic_Memory_we_n LOC= AB9 |  IOSTANDARD=LVCMOS25;
 Net Generic_Memory_oe_n LOC= V17 |  IOSTANDARD=LVCMOS25;
-
 Net Generic_Memory_ce_n LOC=H22 | IOSTANDARD=LVCMOS25;
 Net Generic_Memory_reset LOC=L17 | IOSTANDARD=LVCMOS25;
-#Net fpga_0_FLASH_16Mx16_BYTEn_pin LOC = W18 | IOSTANDARD = LVCMOS25;
 
-##led##
+		##LEDS##
 NET LEDS_TRI_O<0> LOC = D18 ; 
 NET LEDS_TRI_O<1> LOC = D17 ;
 NET LEDS_TRI_O<2> LOC = D5 ;
@@ -124,12 +111,13 @@ NET LEDS_TRI_O<4> LOC = F8 ;
 NET LEDS_TRI_O<5> LOC = F9 ;
 NET LEDS_TRI_O<6> LOC = G11 ;
 
-##UART
+		##UART
 Net RS232_Uart_1_sout  LOC = V9 ; 
 Net RS232_Uart_1_sin  LOC = V7 ; 
 
-##							ETHERNET
-##								PHY 0
+############################## POWERLINK ##################################
+##############################	PHY 0	###################################
+
 NET axi_openmac_0_oMii_txEnable_pin<0> LOC= J22 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_iMii_txClk_pin<0> LOC= L22 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_oMii_txData_pin<0> LOC= K22 | IOSTANDARD=LVCMOS25;
@@ -149,9 +137,8 @@ NET axi_openmac_0_oSmi_clk_pin<0> LOC= P16 | IOSTANDARD=LVCMOS25;
 #NET Generic_EMAC_CRS LOC= G20 | IOSTANDARD=LVCMOS25;
 #NET Generic_EMAC_COL LOC= K18 | IOSTANDARD=LVCMOS25;
 
+##############################	PHY 1	###################################
 
-
-##								PHY 1
 NET axi_openmac_0_oMii_txEnable_pin<1> LOC= K19 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_iMii_txClk_pin<1> LOC= M20 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_oMii_txData_pin<4> LOC= E20 | IOSTANDARD=LVCMOS25;
@@ -168,21 +155,6 @@ NET axi_openmac_0_iMii_rxData_pin<7> LOC= H19 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_oSmi_nPhyRst_pin<1> LOC= G22 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_ioSmi_dio_pin<1> LOC= F19 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_oSmi_clk_pin<1> LOC= F18 | IOSTANDARD=LVCMOS25;
-
-
-
-
-
-################################################################################
-# TIMING CONSTRAINTS
-## Clock groups
-### PLB and MAC clock
-#NET "clk_600_0000MHzPLL0_nobuf" TNM = "FAST_CLK_GRP";
-#NET "clk_100_0000MHzPLL0" TNM = "SLOW_CLK_GRP";
-
-### FAST <--> SLOW
-#TIMESPEC TS_FAST_SLOW_TIG = FROM "FAST_CLK_GRP" TO "SLOW_CLK_GRP" TIG;
-#TIMESPEC TS_SLOW_FAST_TIG = FROM "SLOW_CLK_GRP" TO "FAST_CLK_GRP" TIG;
 
 # Bug Workaround For PHY ADDRESS ERROR on LX25T Board 
 # Address MOdified for Both PHY
