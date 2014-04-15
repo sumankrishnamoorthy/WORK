@@ -102,7 +102,7 @@ Net Generic_Memory_oe_n LOC= V17 |  IOSTANDARD=LVCMOS25;
 Net Generic_Memory_ce_n LOC=H22 | IOSTANDARD=LVCMOS25;
 Net Generic_Memory_reset LOC=L17 | IOSTANDARD=LVCMOS25;
 
-		##LEDS##
+##LEDS##
 NET LEDS_TRI_O<0> LOC = D18 ; 
 NET LEDS_TRI_O<1> LOC = D17 ;
 NET LEDS_TRI_O<2> LOC = D5 ;
@@ -134,11 +134,8 @@ NET axi_openmac_0_iMii_rxData_pin<3> LOC= J16 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_oSmi_nPhyRst_pin<0> LOC= M18 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_ioSmi_dio_pin<0> LOC= N22 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_oSmi_clk_pin<0> LOC= P16 | IOSTANDARD=LVCMOS25;
-#NET Generic_EMAC_CRS LOC= G20 | IOSTANDARD=LVCMOS25;
-#NET Generic_EMAC_COL LOC= K18 | IOSTANDARD=LVCMOS25;
 
 ##############################	PHY 1	###################################
-
 NET axi_openmac_0_oMii_txEnable_pin<1> LOC= K19 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_iMii_txClk_pin<1> LOC= M20 | IOSTANDARD=LVCMOS25;
 NET axi_openmac_0_oMii_txData_pin<4> LOC= E20 | IOSTANDARD=LVCMOS25;
